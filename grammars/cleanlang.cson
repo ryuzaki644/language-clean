@@ -19,6 +19,9 @@
     'include': '#comments'
     }
     {
+    'include': '#strings'
+    }
+    {
     'include': '#numbers'
     }
     {
@@ -28,13 +31,16 @@
     'include': '#null'
     }
     {
-    'include': '#strings'
-    }
-    {
     'include': '#operators'
     }
     {
     'include': '#round'
+    }
+    {
+    'include': '#reverse-bind'
+    }
+    {
+    'include':'#mayBe'
     }
     {
     'include': '#variable'
@@ -223,7 +229,7 @@
         'name' : 'keyword.control.conditional.cleanlang'
       }
       {
-        'match': '\\b(getLine|return|in|let|putLine|do|IO|defineProperty|delete)\\b'
+        'match': '\\b(let|getLine|return|in|readFile|putLine|do|maybeTrue|maybeFalse|maybeUndefined|IO|defineProp|delete)\\b'
         'name': 'keyword.reserved.cleanlang'
       }
     ]
@@ -416,7 +422,7 @@
   'function_calls':
     'patterns': [
       {
-        'match': '([A-Za-z_][A-Za-z0-9_]*)\\s+([^\\+|\\%|\\*|\\+\\+|\\/|\\%|\\=\\=|\\-|\\>|\\<|\\^|if|then|else].+?)(?=$\\n|\\+)'
+        'match': '([A-Za-z_][A-Za-z0-9_]*)\\s+([^\\+|\\%|\\*|\\+\\+|\\/|\\%|\\=\\=|\\-|\\>|\\<|\\^|if|then|else].+?)(?=$\\n|\\+|\\%|\\*|\\+\\+|\\/|\\%|\\=\\=|\\-|\\>|\\<|\\^)'
         'captures':
           '1':
             'name': 'entity.name.function_call.cleanlang'
@@ -426,10 +432,10 @@
                 'include': '#boolean'
               }
               {
-                'include': 'keywords'
+                'include': '#argument'
               }
               {
-                'include': '#argument'
+                'include': '#properties'
               }
               {
                 'include': '#numeric'
@@ -439,9 +445,6 @@
               }
               {
                 'include': '#argument'
-              }
-              {
-                'include': '#strings'
               }
               {
                 'include': '$self'
@@ -463,10 +466,22 @@
             'name': 'punctuation.definition.bracket.round.end.cleanlang'
         'patterns': [
           {
+            'include': '#objects'
+          }
+          {
+            'include': '#properties'
+          }
+          {
+            'include': '#method_calls'
+          }
+          {
             'include': '#function_calls'
           }
           {
             'include': '#argument'
+          }
+          {
+            'include': '#properties'
           }
           {
             'include': '#operators'
@@ -483,5 +498,71 @@
       {
       'match': '[a-zA-Z_][a-zA-Z_0-9]*'
       'name': 'meta.arguments.cleanlang'
+      }
+    ]
+  'reverse-bind':
+    'patterns': [
+      {
+        'match': '((([a-zA-Z_$][\\w$]*)\\s*)+)\\s+(<-)\\s+(.+?)(?=$\\n)'
+        'captures':
+          '1':
+            'patterns': [
+              {
+                'include': '#identifier'
+              }
+            ]
+          '4':
+            'name': 'keyword.operator.reverse-bind.cleanlang'
+          '5':
+            'patterns': [
+              {
+                'include': '#keywords'
+              }
+              {
+                'include': '#bracket_function'
+              }
+              {
+                'include': '#method_calls'
+              }
+              {
+                'include': '#strings'
+              }
+
+            ]
+      }
+    ]
+  'mayBe':
+    'patterns': [
+      {
+        'begin': '(maybeTrue|maybeFalse|maybeUndefined)\\s+(.+?)\\s+(?=\\()(\\()'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.reserved.cleanlang'
+          '2':
+            'patterns': [
+              {
+                'include': '#identifier'
+              }
+            ]
+          '3':
+            'name': 'punctuation.definition.bracket.begin.cleanlang'
+        'end': '(\\))(?=$\\n)'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.bracket.round.end.cleanlang'
+        'patterns': [
+          {
+            'include': '#function_calls'
+          }
+          {
+            'include': '#method_calls'
+          }
+          {
+            'include': '#objects'
+          }
+          {
+            'include': '#properties'
+          }
+        ]
       }
     ]
